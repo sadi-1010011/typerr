@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>TYPERR - touch typing practice app</title>
+	<style type="text/css">
+
+
+
+/* CSS RESET */
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+	margin: 0;
+	padding: 0;
+}
+
+/* CUSTOM STYLES */
+
+.main-container {
+	width: 100%;
+	height: 100%;
+	color: white;
+	background-color: black;
+	font-size: 18px;
+	font-family: sans-serif;
+}
+
+#main-title {
+	display: block;
+	margin: 0 0 1rem 0;
+	padding: 1rem 0;
+	color: black;
+	text-shadow: 2px 1px cyan;
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 30px;
+}
+
+.info-section {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: auto;
+	padding: 8px 12px;
+	width: 88%;
+	border-radius: 9px;
+	overflow: hidden;
+	/*border: 2px solid cyan;*/
+}
+
+.info-box {
+	display: inline-block;
+	padding: 12px 16px;
+	margin: 0 4px;
+	background-color: darkcyan;
+	border-radius: 5px;
+	text-align: center;
+	/*width: 18%;*/
+}
+
+.info-title {
+	text-transform: capitalize;
+	color: lightgrey;
+}
+
+.info-value {
+	padding-top: 8px;
+	color: black;
+	font-size: 1.4rem;
+	font-weight: bold;
+}
+
+
+.typing-section {
+	margin: 1rem auto;
+	padding: 4rem 0 2rem 0;
+	text-align: center;
+	/*border: 1px solid darkcyan;*/
+}
+
+.paragraph-container {
+	width: 80%;
+	margin: auto;
+}
+
+#paragraph {
+	color: white;
+	text-align: center;
+	font-size: 3rem;
+	font-family: monospace;
+}
+
+.current-container {
+	background-color: yellowgreen;
+	position: relative;
+	width: 80px;
+	height: 80px;
+	top: calc(-1.5rem + -40px);
+	left: -30px;
+	border-radius: 50%;
+}
+
+#typerr {
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	font-size: 2rem;
+	font-weight: bold;
+	background-color: transparent;
+	outline: none;
+	border: none;
+	color: grey;
+	opacity: 0.8;
+	overflow: hidden;
+}
+
+
+.options-section {
+
+	margin: auto;
+	padding: 2rem 0;
+	width: 60%;
+	text-align: center;
+}
+
+.btn {
+	padding: 4px 12px;
+	margin: 6px 2px;
+	border: none;
+	outline: none;
+	border-radius: 4px;
+	text-transform: uppercase;
+	font-weight: bold;
+	color: white;
+	background-color: transparent;
+	box-shadow: 2px 3px 5px cyan;
+}
+
+.choosetext-wrapper {
+	display: block;
+	width: 70%;
+	margin: auto;
+	padding: 0.4rem 0;
+	/* border: 1px solid orange; */
+}
+
+.choosetext {
+	display: block;
+	margin: auto;
+	text-transform: none;
+	font-family: sans-serif;
+}
+
+
+
+
+#currenttext-hiliter {
+	display: block;
+	margin: 0.6rem auto 0.4rem auto;
+	width: 50%;
+	box-shadow: 0 -20px 100px 40px cyan;
+	border-bottom: 1px solid black;
+}
+
+#currentletter {
+	display: block;
+	margin: 0 2rem;
+	width: 3rem;
+	box-shadow: -40px -30px 90px 66px red;
+	/* border-bottom: 1px solid black; */
+}
+
+
+/* CUSTOM TEXT */
+
+#customtext-container {
+	display: none;
+	position: absolute;
+	width: 40%;
+	top: 36%;
+	left: 30%;
+	padding: 2rem 1.2rem;
+	background-color: cornflowerblue;
+	border-top-right-radius: 3rem;
+	border-bottom-left-radius: 2rem;
+    text-align: center;
+    font-family: fantasy, cursive, Arial, Helvetica, sans-serif, serif;
+}
+
+#customTextBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#customTextBox > textarea {
+    display: block;
+    margin: 0.8rem auto;
+    width: 80%;
+    border-radius: 6px;
+    background-color: darkslategray;
+    color: white;
+    font-size: 1.3rem;
+    padding: 1rem 12px;
+}
+
+#typerrbtn {
+	padding: 4px 12px;
+	margin: 6px 2px;
+	border: none;
+	outline: none;
+	border-radius: 4px;
+	text-transform: uppercase;
+    font-size: large;
+    font-weight: bold;
+	color: white;
+	background-color: transparent;
+	box-shadow: 2px 3px 5px cyan;
+}
+
+/* RESULT BOX */
+
+
+
+/* HELPER CLASS */
+
+.d-table-cell {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+select > option {
+	background-color: black;
+	color: cyan;
+	padding: 4px;
+}
+
+#bgblur {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	z-index: 99;
+	opacity: 0;
+	background-color: black;
+}
+
+
+/* MEDIA QUERIES */
+
+@media screen and (max-width: 526px) {
+	.info-box { padding: 6px 8px; border-radius: 4px; }
+	.info-title { font-size: 0.9rem; }
+	.info-value { font-size: 1.2rem; }
+	.info-section { justify-content: space-around; }
+	#paragraph { font-size: 2rem; }
+
+
+	</style>
+
+</head>
+<body>
+
+<main class="main-container">
+
+	<h1 id="main-title">typerr</h1>
+
+	<section class="info-section">
+		<div class="info-box">
+			<h4 class="info-title">correct</h4>
+			<p class="info-value">0</p>
+		</div>
+		<div class="info-box">
+			<h4 class="info-title">incorrect</h4>
+			<p class="info-value">0</p>
+		</div>
+		<div class="info-box">
+			<h4 class="info-title">corrected</h4>
+			<p class="info-value">0</p>
+		</div>
+		<div class="info-box">
+			<h4 class="info-title">speed(wpm)</h4>
+			<p class="info-value">0</p>
+		</div>
+	</section>
+
+	<section class="typing-section">
+		<div class="paragraph-container">
+			<p id="paragraph" onclick="typerr.focus();"></p>
+			<span id="currenttext-hiliter">
+				<span id="currentletter"></span>
+			</span>
+		</div>
+		<div class="current-container">
+			<input type="text" id="typerr" placeholder="_">
+		</div>
+	</section>
+
+	<section class="options-section">
+		<button class="reset btn" onclick="// wpm = 0, timer = 0, char_index = 0, isBackspace = false, backspaceCount = 0; loadContents(); 
+		window.location.reload();">reset !</button>
+		<button class="random btn" onclick="setCurrentParagraph(Math.floor(Math.random()*3)+1);">random ~</button>
+		<!-- <button class="choose btn" onclick="document.all.choosetxt.focus();">choose @</button> -->
+		<button class="custom btn" onclick="document.getElementById('customtext-container').style.display = 'block';">custom #</button>
+	</section>
+
+    <div class="choosetext-wrapper">
+        <select name="choosetxt" class="choosetext btn" onclick="setCurrentParagraph(this.selectedIndex+1)">
+            <option>paragraph 1</option>
+            <option>paragraph 2</option>
+            <option>paragraph 3</option>
+        </select>
+    </div>
+
+	<div id="bgblur"></div>
+
+	<div id="customtext-container">
+	    <h1>CUSTOM TEXT</h1>
+	    <div id="customTextBox">
+	        <textarea id="customText"></textarea>
+	    </div>
+    	<input type="button" id="typerrbtn" value="save">
+	</div>
+
+</main>
+
+
+<script type="text/javascript">
+
+
+// GAME VARIABLES
+let wpm = 0;
+let timer = 0;
+let char_index = 0;
+const char_amount = 20;
+let isBackspace = false;
+let backspaceCount = 0;
+let currentParagraph = '';
+let deletetimerID;
+let raw_paragraph = '';
+
+// DOM ELEMENTS
+const paragraph = id('paragraph');
+const typerr = id('typerr');
+const typedfeedback = id('currentletter');
+const typinginfo = document.querySelectorAll('p.info-value'); // crct, incrct, crctd, wpm
+
+// INITIAL SETUP
+window.addEventListener('load', function() {
+	typerr.value = '';
+	paragraph.value = '';
+	typerr.focus();
+	// start timer -- maybe a start btn could be introduced
+	let timerID = setInterval(function() {
+		// update every second
+		updateWPM();
+		timer++;
+	}, 1000);
+	// remove timer
+	deletetimerID = function() { clearInterval(timerID); }
+	// first run
+	setCurrentParagraph(1);
+});
+
+// load n format text
+function loadContents() {
+    // remove linebreaks n stuff
+    raw_paragraph = currentParagraph.replace(/(\n|\r)/gm, " ");
+    // show first x letters in para
+    paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
+}
+
+
+// handle user input 1 letter at a time
+typerr.addEventListener('keydown', function(event) {
+	// extract values
+	let letter = event.key;
+	let firstcharacter = paragraph.textContent.charAt(0);
+
+	// checkk backspace
+	isBackspace = (letter == 'Backspace') ? true : false;
+
+	// clear previous value, show current letter
+	event.preventDefault();	
+	this.value = '';
+	this.value = isBackspace ? '_' : letter; // underscore for space
+	// console.log('letter: ', letter);
+	// console.log('char: ',firstcharacter);
+
+
+	// KEYCODE LOGIC here
+	// -------------
+	if(isBackspace) {
+		backspaceCount++;
+		char_index = char_index > 0 ? char_index-- : 0;
+		typerr.value = '';
+		// decrease incorrect info value X-- maybe in next update. --X
+		// typinginfo[1].textContent = Number(typinginfo[1].textContent) - 1;
+	}
+
+	// correct letter
+	if(letter == firstcharacter) {
+		char_index++;
+		// update correct count
+		typinginfo[0].textContent = Number(typinginfo[0].textContent) + 1;
+		// corrected letter
+		if(backspaceCount > 0) {
+			typinginfo[2].textContent = Number(typinginfo[2].textContent) + 1;
+			backspaceCount--;
+			// console.log('backspaceCount: ',backspaceCount);
+		}
+		typedfeedback.style.boxShadow = '-70px -30px 90px 66px yellowgreen'; // feedback		
+	}
+
+	// incorrect letter
+	if(letter !== firstcharacter && !isBackspace) {
+		// update incorrect count
+		typinginfo[1].textContent = Number(typinginfo[1].textContent) + 1;
+		// feedback
+		typedfeedback.style.boxShadow = '-70px -30px 90px 66px red';
+	}
+
+	// live typing speed
+	updateWPM();
+	
+	// pull new text to type
+	paragraph.textContent = raw_paragraph.substr(char_index, char_amount);
+	
+	// check if text end
+	if(raw_paragraph.substr(char_index, char_amount) == '') {
+		stopTyperr();
+		return false;
+		// END GAME (:)
+	}
+
+});
+
+
+
+// CUSTOM FUCKS-
+
+function setCurrentParagraph(index = 1) {
+    // set by order or random according to parameter by user
+    currentParagraph = allParagraphs[index - 1];
+    // console.log('set paragraph',index);
+    loadContents();
+}
+
+
+// ticks every second
+function updateWPM() {
+	// console.log(timer)
+	let onesecond = timer / 60;
+	wpm = Math.floor((char_index / 5) / onesecond);
+	typinginfo[3].textContent = wpm > 5 ? wpm : '...';
+}
+
+// stop typing listener cycle
+function stopTyperr() {
+	// quit all dynamics
+	console.log('successfully completed.');
+	// end timer
+	deletetimerID();
+	// remove typing listener
+	typerr.removeEventListener('keydown', function() {
+		console.log('removed typing event listener');
+		// i dunno where this line works in r out
+		this.setAttribute('disabled', 'disabled');
+	});  // so ..
+	typerr.setAttribute('disabled', 'disabled');
+	// show results
+	animatedCelebration(wpm);
+}
+
+// finish game
+function animatedCelebration(speed) {
+	// dom manupulation ahead !!
+	const typingSpeed = document.querySelector('.info-box:nth-child(4)')
+	// animated result entry
+	document.getElementById('bgblur').style.display = 'block';
+	typingSpeed.style.transition = '1.16s';
+	typingSpeed.style.position = 'absolute';
+	typingSpeed.style.transform = 'scale(1.62) rotate(360deg)';
+	typingSpeed.style.top = '45%';
+	typingSpeed.style.left = '45%';
+	typingSpeed.style.backgroundColor = 'white';
+	typingSpeed.style.boxShadow = '3px 4px 4px 2px black';
+	typingSpeed.style.zIndex = '999';
+	document.getElementById('bgblur').style.opacity = '0.6';
+
+	// restart button create
+	let restartBtn = document.createElement('button');
+	restartBtn.addEventListener('click', function() { window.location.reload(); });
+	restartBtn.textContent = 'restart';
+	// append after 2 seconds
+	setTimeout(function() {
+		typingSpeed.appendChild(restartBtn);
+	}, 2000);
+
+	console.log('your speed is : ', speed);
+}
+
+
+// CUSTOM TEXT APPLYYYYYYER FUNCKKSIONn
+
+const typerbtn = id('typerrbtn');
+const customtext = id('customText');
+
+typerbtn.addEventListener('click', function() {
+	let newText = customtext.value;
+	// apply custom text to paragraph, removing newlines..etc
+	if(newText.length > 0) {
+		raw_paragraph = newText.replace(/(\n|\r)/gm, " ");
+	}else {
+		alert('Enter atleast minimum letters to go..');
+		return false;
+	}
+	char_index = 0; // start from beginning
+	paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
+	customtext.value = '';
+	typerr.focus();
+	document.getElementById('customtext-container').style.display = 'none';
+});
+
+
+// HELPER FUNCTIONS
+
+function id(el) {
+	return document.getElementById(el);
+}
+
+
+</script>
+<script type="text/javascript">
+
+let paragraph1 = `What is JavaScript?
+Javascript is a dynamic computer programming language. It is lightweight and
+most commonly used as a part of web pages, whose implementations allow
+client-side script to interact with the user and make dynamic pages. It is an
+interpreted programming language with object-oriented capabilities.
+JavaScript was first known as LiveScript, but Netscape changed its name to
+JavaScript, possibly because of the excitement being generated by Java.
+JavaScript made its first appearance in Netscape 2.0 in 1995 with the
+name LiveScript. The general-purpose core of the language has been
+embedded in Netscape, Internet Explorer, and other web browsers.`;
+
+let paragraph2 = `Client-Side JavaScript
+Client-side JavaScript is the most common form of the language. The script 
+should be included in or referenced by an HTML document for the code to be 
+interpreted by the browser.
+It means that a web page need not be a static HTML, but can include programs 
+that interact with the user, control the browser, and dynamically create HTML 
+content.
+The JavaScript client-side mechanism provides many advantages over traditional 
+CGI server-side scripts. For example, you might use JavaScript to check if the 
+user has entered a valid e-mail address in a form field.
+The JavaScript code is executed when the user submits the form, and only if all 
+the entries are valid, they would be submitted to the Web Server.
+JavaScript can be used to trap user-initiated events such as button clicks, link 
+navigation, and other actions that the user initiates explicitly or implicitly.`;
+
+let paragraph3 = `Limitations of JavaScript
+We cannot treat JavaScript as a full-fledged programming language. It lacks the 
+following important features:
+ Client-side JavaScript does not allow the reading or writing of files. This 
+has been kept for security reason.
+ JavaScript cannot be used for networking applications because there is no 
+such support available.
+ JavaScript doesn't have any multithreading or multiprocessor capabilities.
+Once again, JavaScript is a lightweight, interpreted programming language that 
+allows you to build interactivity into otherwise static HTML pages.
+Where is JavaScript Today?
+The ECMAScript Edition 5 standard will be the first update to be released in over 
+four years. JavaScript 2.0 conforms to Edition 5 of the ECMAScript standard, and 
+the difference between the two is extremely minor.
+The specification for JavaScript 2.0 can be found on the following site:`;
+
+let allParagraphs = [paragraph1, paragraph2, paragraph3];
+
+
+// thanks to you , if you have read this code till here, u r real programmer .
+
+</script>
+
+</body>
+</html>
