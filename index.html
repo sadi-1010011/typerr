@@ -388,9 +388,14 @@ function loadContents() {
 
 
 // handle user input 1 letter at a time
-typerr.addEventListener('keydown', function(event) {
+typerr.addEventListener('keypress', function(event) {
 	// extract values
-	let letter = event.key;
+	let letter = event.key || event.which;
+	
+	// debuggg test 1
+	// ISSUE : cant extract key from input
+	// alert(letter);	
+	
 	let firstcharacter = paragraph.textContent.charAt(0);
 
 	// checkk backspace
