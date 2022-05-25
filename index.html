@@ -20,6 +20,10 @@ body {
 	padding: 0;
 	overflow: hidden;
 	box-sizing: border-box;
+	background-image: url('background.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
 }
 
 h1, h2, h3, h4, h5, h6, p {
@@ -33,7 +37,7 @@ h1, h2, h3, h4, h5, h6, p {
 	width: 100%;
 	height: 100%;
 	color: white;
-	background-color: black;
+	background-color: rgba(0, 0, 0, 0.5);
 	font-size: 18px;
 	font-family: sans-serif;
 }
@@ -65,10 +69,16 @@ h1, h2, h3, h4, h5, h6, p {
 	display: inline-block;
 	padding: 12px 16px;
 	margin: 0 4px;
+	width: 4rem;
+	height: 4rem;
+	/*background-color: grey;*/
 	background-color: darkcyan;
+	/*border:  1px solid white;*/
 	border-radius: 5px;
 	text-align: center;
-	/*width: 18%;*/
+	background-size: cover;
+	background-position: center center;
+
 }
 
 .info-title {
@@ -181,7 +191,7 @@ h1, h2, h3, h4, h5, h6, p {
 	margin: 0 2rem;
 	width: 3rem;
 	box-shadow: -40px -30px 90px 66px red;
-	/* border-bottom: 1px solid black; */
+	/*border-bottom: 1px solid black; */
 }
 
 
@@ -261,6 +271,31 @@ select > option {
 	background-color: black;
 }
 
+/*.bg-icon-clock, .bg-icon-speed, .bg-icon-correct, .bg-icon-incorrect {
+	width: 1rem;
+	height: auto;
+}
+
+.bg-icon-clock {
+	background-image: url('clock.png');
+}
+
+
+.bg-icon-speed {
+	background-image: url('speed.png');
+	
+}
+
+.bg-icon-incorrect {
+	background-image: url('incorrect.png');
+	
+}
+
+.bg-icon-correct {
+	background-image: url('correct.png');
+	
+}*/
+
 
 /* MEDIA QUERIES */
 
@@ -271,6 +306,16 @@ select > option {
 	.info-section { justify-content: space-around; }
 	#paragraph { font-size: 2rem; }
 
+/* ANIMATION */
+
+@keyframes inputFeedback {
+	0% {
+		transform: scale(1.9);
+	}
+	100% {
+		transform: scale(1.5);
+	}
+}
 
 	</style>
 
@@ -282,19 +327,19 @@ select > option {
 	<h1 id="main-title">typerr</h1>
 
 	<section class="info-section">
-		<div class="info-box">
+		<div class="info-box bg-icon-correct">
 			<h4 class="info-title">correct</h4>
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box">
+		<div class="info-box bg-icon-incorrect">
 			<h4 class="info-title">incorrect</h4>
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box">
+		<div class="info-box bg-icon-clock">
 			<h4 class="info-title">corrected</h4>
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box">
+		<div class="info-box bg-icon-speed">
 			<h4 class="info-title">speed(wpm)</h4>
 			<p class="info-value">0</p>
 		</div>
@@ -328,8 +373,6 @@ select > option {
         </select>
     </div>
 
-	<div id="bgblur"></div>
-
 	<div id="customtext-container">
 	    <h1>CUSTOM TEXT</h1>
 	    <div id="customTextBox">
@@ -337,6 +380,8 @@ select > option {
 	    </div>
     	<input type="button" id="typerrbtn" value="save">
 	</div>
+
+	<div id="bgblur"></div>
 
 </main>
 
@@ -352,8 +397,8 @@ const char_amount = 20;
 let isBackspace = false;
 let backspaceCount = 0;
 let currentParagraph = '';
-let deletetimerID;
 let raw_paragraph = '';
+let deletetimerID;
 
 // DOM ELEMENTS
 const paragraph = id('paragraph');
@@ -372,7 +417,7 @@ window.addEventListener('load', function() {
 		updateWPM();
 		timer++;
 	}, 1000);
-	// remove timer
+	// remove timer function
 	deletetimerID = function() { clearInterval(timerID); }
 	// first run
 	setCurrentParagraph(1);
@@ -383,18 +428,24 @@ function loadContents() {
     // remove linebreaks n stuff
     raw_paragraph = currentParagraph.replace(/(\n|\r)/gm, " ");
     // show first x letters in para
+    char_index = 0; // reset to first letter of para
     paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
 }
 
 
 // handle user input 1 letter at a time
 typerr.addEventListener('keypress', function(event) {
+	event.preventDefault();	
+
 	// extract values
 	let letter = event.key || event.which;
-	
+	// for detecting backspace
+	const letterCode = event.keyCode || event.charCode;
+	// dont try - Charles Bukowski
+	if(!letter || !letterCode) return false;
 	// debuggg test 1
 	// ISSUE : cant extract key from input
-	// alert(letter);	
+	// console.log(letterCode);
 	
 	let firstcharacter = paragraph.textContent.charAt(0);
 
@@ -402,16 +453,18 @@ typerr.addEventListener('keypress', function(event) {
 	isBackspace = (letter == 'Backspace') ? true : false;
 
 	// clear previous value, show current letter
-	event.preventDefault();	
 	this.value = '';
 	this.value = isBackspace ? '_' : letter; // underscore for space
 	// console.log('letter: ', letter);
 	// console.log('char: ',firstcharacter);
 
 
-	// KEYCODE LOGIC here
-	// -------------
+	// KEYCODE LOGIC here:
+
+	// NEXT VERSION feature..
+	// isbackspace is always false since we use keypress instead of keydown
 	if(isBackspace) {
+		console.log('Backspace: ', backspaceCount);
 		backspaceCount++;
 		char_index = char_index > 0 ? char_index-- : 0;
 		typerr.value = '';
@@ -425,12 +478,12 @@ typerr.addEventListener('keypress', function(event) {
 		// update correct count
 		typinginfo[0].textContent = Number(typinginfo[0].textContent) + 1;
 		// corrected letter
-		if(backspaceCount > 0) {
+		if(backspaceCount > 0) { // COMINGSOONNN... ftr
 			typinginfo[2].textContent = Number(typinginfo[2].textContent) + 1;
 			backspaceCount--;
 			// console.log('backspaceCount: ',backspaceCount);
 		}
-		typedfeedback.style.boxShadow = '-70px -30px 90px 66px yellowgreen'; // feedback		
+		typedfeedback.style.boxShadow = '-70px -30px 90px 66px yellowgreen'; // feedback
 	}
 
 	// incorrect letter
@@ -441,7 +494,7 @@ typerr.addEventListener('keypress', function(event) {
 		typedfeedback.style.boxShadow = '-70px -30px 90px 66px red';
 	}
 
-	// live typing speed
+	// live typing speed on every key press
 	updateWPM();
 	
 	// pull new text to type
@@ -465,6 +518,7 @@ function setCurrentParagraph(index = 1) {
     currentParagraph = allParagraphs[index - 1];
     // console.log('set paragraph',index);
     loadContents();
+    typerr.focus();
 }
 
 
@@ -472,8 +526,9 @@ function setCurrentParagraph(index = 1) {
 function updateWPM() {
 	// console.log(timer)
 	let onesecond = timer / 60;
+	// equation to find speed -taken that avg word is 5 char.
 	wpm = Math.floor((char_index / 5) / onesecond);
-	typinginfo[3].textContent = wpm > 5 ? wpm : '...';
+	typinginfo[3].textContent = wpm > 5 ? wpm : '...'; // min speed 5, atleast
 }
 
 // stop typing listener cycle
@@ -483,9 +538,9 @@ function stopTyperr() {
 	// end timer
 	deletetimerID();
 	// remove typing listener
-	typerr.removeEventListener('keydown', function() {
-		console.log('removed typing event listener');
-		// i dunno where this line works in r out
+	typerr.removeEventListener('keypress', function() {
+		console.log('Removing Event listeners');
+		// i dunno where this line works in or out
 		this.setAttribute('disabled', 'disabled');
 	});  // so ..
 	typerr.setAttribute('disabled', 'disabled');
@@ -531,6 +586,7 @@ typerbtn.addEventListener('click', function() {
 	let newText = customtext.value;
 	// apply custom text to paragraph, removing newlines..etc
 	if(newText.length > 0) {
+		// clean enterd text
 		raw_paragraph = newText.replace(/(\n|\r)/gm, " ");
 	}else {
 		alert('Enter atleast minimum letters to go..');
@@ -539,8 +595,8 @@ typerbtn.addEventListener('click', function() {
 	char_index = 0; // start from beginning
 	paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
 	customtext.value = '';
-	typerr.focus();
 	document.getElementById('customtext-container').style.display = 'none';
+	typerr.focus();
 });
 
 
@@ -586,8 +642,7 @@ following important features:
  Client-side JavaScript does not allow the reading or writing of files. This 
 has been kept for security reason.
  JavaScript cannot be used for networking applications because there is no 
-such support available.
- JavaScript doesn't have any multithreading or multiprocessor capabilities.
+such support available. JavaScript doesn't have any multithreading or multiprocessor capabilities.
 Once again, JavaScript is a lightweight, interpreted programming language that 
 allows you to build interactivity into otherwise static HTML pages.
 Where is JavaScript Today?
@@ -599,7 +654,7 @@ The specification for JavaScript 2.0 can be found on the following site:`;
 let allParagraphs = [paragraph1, paragraph2, paragraph3];
 
 
-// thanks to you , if you have read this code till here, u r real programmer .
+// thanks to you , if you have read this code till here, u r a good person	 .
 
 </script>
 
