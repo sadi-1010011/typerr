@@ -42,7 +42,6 @@ h1, h2, h3, h4, h5, h6, p {
 	width: 100vw;
 	height: 100vh;
 	color: white;
-	/*background-color: rgba(0, 0, 0, 0.5);*/
 	font-size: 18px;
 	font-family: sans-serif;
 	transition: 1.2s;
@@ -183,14 +182,13 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 
-
-
 #currenttext-hiliter {
 	display: block;
 	margin: 0.6rem auto 0.4rem auto;
 	width: 50%;
-	box-shadow: 0 -20px 100px 40px cyan;
-	border-bottom: 1px solid black;
+	/*box-shadow: 0 -20px 100px 40px cyan;*/
+	/*border-bottom: 1px solid black;*/
+	transition: box-shadow 1s ease-in;
 }
 
 #currentletter {
@@ -200,6 +198,16 @@ h1, h2, h3, h4, h5, h6, p {
 	box-shadow: -40px -30px 90px 66px black;
 	transition: 0.1s;
 	/*border-bottom: 1px solid black; */
+}
+
+#paragraph-progressBar {
+	background-color: yellowgreen;
+	display: block;
+	width: 0%;
+	border-radius: 8px;
+	font-size: 12px;
+	padding: 1px 2px;
+	color: maroon;
 }
 
 
@@ -357,6 +365,7 @@ select > option {
 			<p id="paragraph" onclick="typerr.focus();"></p>
 			<span id="currenttext-hiliter">
 				<span id="currentletter"></span>
+				<div id="paragraph-progressBar"></div>
 			</span>
 		</div>
 		<div class="current-container">
@@ -403,12 +412,14 @@ let char_index = 0;
 const char_amount = 20;
 let isBackspace = false;
 let backspaceCount = 0;
+let progressValue = 0;
 let currentParagraph = '';
 let raw_paragraph = '';
 let deletetimerID;
 
 // DOM ELEMENTS
 const paragraph = id('paragraph');
+const progressBar = id('paragraph-progressBar');
 const typerr = id('typerr');
 const typedfeedback = id('currentletter');
 const typinginfo = querySelectAll('p.info-value'); // crct, incrct, tym, wpm
@@ -440,6 +451,7 @@ function pageLoadUIUX() {
 	id('paragraph').style.color = '#fff';
 	querySelect('.current-container').style.transform = "scale(1.35)";
 	querySelect('.info-section').style.padding = "1.5rem 12px";
+	id('currenttext-hiliter').style.boxShadow = "0 -20px 100px 40px cyan";
 	// id('currentletter').style.width = "3rem";
 }
 
@@ -448,8 +460,11 @@ function loadContents() {
     // remove linebreaks n stuff
     raw_paragraph = currentParagraph.replace(/(\n|\r)/gm, " ");
     // show first x letters in para
-    char_index = 0; // reset to first letter of para
     paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
+    char_index = 0;
+    timer = 0;
+    progressValue = 0;
+    // typerr.focus();
 }
 
 
@@ -517,6 +532,9 @@ typerr.addEventListener('keypress', function(event) {
 	// live typing speed on every key press
 	updateWPM();
 	
+	// live progressBar
+	showProgress();
+
 	// pull new text to type
 	paragraph.textContent = raw_paragraph.substr(char_index, char_amount);
 	
@@ -538,7 +556,6 @@ function setCurrentParagraph(index = 1) {
     currentParagraph = allParagraphs[index - 1];
     // console.log('set paragraph',index);
     loadContents();
-    typerr.focus();
 }
 
 
@@ -549,6 +566,15 @@ function updateWPM() {
 	// equation to find speed -taken that avg word is 5 char.
 	wpm = Math.floor((char_index / 5) / onesecond);
 	typinginfo[3].textContent = wpm > 5 ? wpm : '...'; // min speed 5, atleast
+}
+
+function showProgress() {
+	// calculate progress : para length/correct count 
+	progressValue = Math.floor((Number(typinginfo[0].textContent) / raw_paragraph.length) * 100);
+	progressValue = progressValue > 0 ? progressValue : 0;
+	// update progress
+	progressBar.style.width = `${progressValue}%`;
+	progressBar.textContent = `${progressValue}%`;
 }
 
 // stop typing listener cycle
@@ -576,11 +602,12 @@ function animatedCelebration(speed) {
 	document.getElementById('bgblur').style.display = 'block';
 	typingSpeed.style.transition = '1.16s';
 	typingSpeed.style.position = 'absolute';
-	typingSpeed.style.transform = 'scale(1.8) rotate(360deg)';
+	typingSpeed.style.transform = 'scale(2) rotate(360deg)';
 	typingSpeed.style.top = '45%';
 	typingSpeed.style.left = '45%';
-	typingSpeed.style.backgroundColor = '#efc107';
+	typingSpeed.style.backgroundColor = 'rgb(42 91 96)';
 	typingSpeed.style.boxShadow = '3px 4px 4px 2px black';
+	typingSpeed.style.padding = '6px 12px';
 	typingSpeed.style.zIndex = '999';
 	document.getElementById('bgblur').style.opacity = '0.6';
 
@@ -591,6 +618,7 @@ function animatedCelebration(speed) {
 	// append after 2 seconds
 	setTimeout(function() {
 		typingSpeed.appendChild(restartBtn);
+		// restartBtn.classList.add('btn')
 	}, 2000);
 
 	console.log('your speed is : ', speed);
@@ -604,7 +632,7 @@ const customtext = id('customText');
 
 typerbtn.addEventListener('click', function() {
 	let newText = customtext.value;
-	// apply custom text to paragraph, removing newlines..etc
+// apply custom text to paragraph, removing newlines..etc
 	if(newText.length > 0) {
 		// clean enterd text
 		raw_paragraph = newText.replace(/(\n|\r)/gm, " ");
@@ -613,8 +641,14 @@ typerbtn.addEventListener('click', function() {
 		customtext.focus();
 		return false;
 	}
-	char_index = 0; // start from beginning
+// reset values
+	timer = 0;
+	char_index = 0;
+	progressValue = 0;
+	typinginfo[0].textContent = 0;
+	typinginfo[1].textContent = 0;
 	paragraph.textContent = raw_paragraph.slice(char_index, char_amount);
+    progressBar.style.width = `${progressValue}%`;
 	customtext.value = '';
 	document.getElementById('customtext-container').style.display = 'none';
 	typerr.focus();
