@@ -3,7 +3,7 @@
 https://sadi-1010011.github.io/typerr
 
 # Typerr
-Touch typing practice app for keyboard masters to beginners 
+Touch typing practice app for mastering your keyboard
 
 # info
 This is a web version of my previous electron application,
