@@ -2,13 +2,18 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 	<title>TYPERR - touch typing practice app</title>
 	<style type="text/css">
 
 
 
 /* CSS RESET */
+
+* {
+	box-sizing: border-box;
+	transition: 1s;
+}
 
 html, body {
 	width: 100%;
@@ -34,12 +39,13 @@ h1, h2, h3, h4, h5, h6, p {
 /* CUSTOM STYLES */
 
 .main-container {
-	width: 100%;
-	height: 100%;
+	width: 100vw;
+	height: 100vh;
 	color: white;
-	background-color: rgba(0, 0, 0, 0.5);
+	/*background-color: rgba(0, 0, 0, 0.5);*/
 	font-size: 18px;
 	font-family: sans-serif;
+	transition: 1.2s;
 }
 
 #main-title {
@@ -58,27 +64,22 @@ h1, h2, h3, h4, h5, h6, p {
 	align-items: center;
 	justify-content: center;
 	margin: auto;
-	padding: 8px 12px;
-	width: 88%;
+	/*padding: 1.5rem 12px;*/
 	border-radius: 9px;
 	overflow: hidden;
-	/*border: 2px solid cyan;*/
+	/*border: 1px solid cyan;*/
 }
 
 .info-box {
 	display: inline-block;
 	padding: 12px 16px;
 	margin: 0 4px;
-	width: 4rem;
-	height: 4rem;
-	/*background-color: grey;*/
-	background-color: darkcyan;
-	/*border:  1px solid white;*/
 	border-radius: 5px;
 	text-align: center;
 	background-size: cover;
 	background-position: center center;
-
+/*	background-color: darkcyan;
+	border:  1px solid white;*/
 }
 
 .info-title {
@@ -87,16 +88,16 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 .info-value {
-	padding-top: 8px;
-	color: black;
+	padding-top: 10px;
+	color: wheat;
 	font-size: 1.4rem;
-	font-weight: bold;
+	font-weight: 500;
 }
 
 
 .typing-section {
 	margin: 1rem auto;
-	padding: 4rem 0 2rem 0;
+	padding: 1rem 0 2rem 0;
 	text-align: center;
 	/*border: 1px solid darkcyan;*/
 }
@@ -107,10 +108,16 @@ h1, h2, h3, h4, h5, h6, p {
 }
 
 #paragraph {
-	color: white;
+	color: #232323;
 	text-align: center;
 	font-size: 3rem;
 	font-family: monospace;
+	transition: color 1.6s;
+}
+
+#paragraph::first-letter {
+	font-size: 4rem;
+	color: wheat;
 }
 
 .current-container {
@@ -121,6 +128,7 @@ h1, h2, h3, h4, h5, h6, p {
 	top: calc(-1.5rem + -40px);
 	left: -30px;
 	border-radius: 50%;
+	transition: 1s;
 }
 
 #typerr {
@@ -128,19 +136,18 @@ h1, h2, h3, h4, h5, h6, p {
 	width: 100%;
 	height: 100%;
 	text-align: center;
-	font-size: 2rem;
+	font-size: 1.7rem;
 	font-weight: bold;
 	background-color: transparent;
 	outline: none;
 	border: none;
-	color: grey;
+	color: #000;
 	opacity: 0.8;
 	overflow: hidden;
 }
 
 
 .options-section {
-
 	margin: auto;
 	padding: 2rem 0;
 	width: 60%;
@@ -190,7 +197,8 @@ h1, h2, h3, h4, h5, h6, p {
 	display: block;
 	margin: 0 2rem;
 	width: 3rem;
-	box-shadow: -40px -30px 90px 66px red;
+	box-shadow: -40px -30px 90px 66px black;
+	transition: 0.1s;
 	/*border-bottom: 1px solid black; */
 }
 
@@ -200,15 +208,22 @@ h1, h2, h3, h4, h5, h6, p {
 #customtext-container {
 	display: none;
 	position: absolute;
-	width: 40%;
+	width: 60%;
 	top: 36%;
-	left: 30%;
+	left: 20%;
 	padding: 2rem 1.2rem;
-	background-color: cornflowerblue;
+	background-color: #2c444a; /*#114953*/
 	border-top-right-radius: 3rem;
 	border-bottom-left-radius: 2rem;
     text-align: center;
     font-family: fantasy, cursive, Arial, Helvetica, sans-serif, serif;
+}
+
+.customTextBox-title {
+	color: gray;
+	font-weight: 500;
+	margin: 0.45rem 0;
+	text-transform: capitalize;
 }
 
 #customTextBox {
@@ -228,9 +243,9 @@ h1, h2, h3, h4, h5, h6, p {
     padding: 1rem 12px;
 }
 
-#typerrbtn {
-	padding: 4px 12px;
-	margin: 6px 2px;
+.customtext-btn {
+	padding: 6px 12px;
+	margin: 10px 4px;
 	border: none;
 	outline: none;
 	border-radius: 4px;
@@ -271,30 +286,12 @@ select > option {
 	background-color: black;
 }
 
-/*.bg-icon-clock, .bg-icon-speed, .bg-icon-correct, .bg-icon-incorrect {
-	width: 1rem;
+.bg-icon-size {
+	width: 3rem;
 	height: auto;
 }
 
-.bg-icon-clock {
-	background-image: url('clock.png');
-}
 
-
-.bg-icon-speed {
-	background-image: url('speed.png');
-	
-}
-
-.bg-icon-incorrect {
-	background-image: url('incorrect.png');
-	
-}
-
-.bg-icon-correct {
-	background-image: url('correct.png');
-	
-}*/
 
 
 /* MEDIA QUERIES */
@@ -305,17 +302,23 @@ select > option {
 	.info-value { font-size: 1.2rem; }
 	.info-section { justify-content: space-around; }
 	#paragraph { font-size: 2rem; }
+	#paragraph::first-letter { font-size: 2.8rem; }
+	#customtext-container { width: 80%; left: 10%; }
+
 
 /* ANIMATION */
 
-@keyframes inputFeedback {
+
+@keyframes expandAndShrink {
 	0% {
-		transform: scale(1.9);
+		transform: scale(1);
 	}
 	100% {
-		transform: scale(1.5);
+		transform: scale(1.23);
 	}
 }
+
+
 
 	</style>
 
@@ -327,20 +330,24 @@ select > option {
 	<h1 id="main-title">typerr</h1>
 
 	<section class="info-section">
-		<div class="info-box bg-icon-correct">
-			<h4 class="info-title">correct</h4>
+		<div class="info-box">
+			<!-- <h4 class="info-title">correct</h4> -->
+			<img src="correct.png" class="bg-icon-size">
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box bg-icon-incorrect">
-			<h4 class="info-title">incorrect</h4>
+		<div class="info-box">
+			<!-- <h4 class="info-title">incorrect</h4> -->
+			<img src="incorrect.png" class="bg-icon-size">
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box bg-icon-clock">
-			<h4 class="info-title">corrected</h4>
+		<div class="info-box">
+			<!-- <h4 class="info-title">time</h4> -->
+			<img src="clock.png" class="bg-icon-size">
 			<p class="info-value">0</p>
 		</div>
-		<div class="info-box bg-icon-speed">
-			<h4 class="info-title">speed(wpm)</h4>
+		<div class="info-box">
+			<!-- <h4 class="info-title">speed(wpm)</h4> -->
+			<img src="speed.png" class="bg-icon-size">
 			<p class="info-value">0</p>
 		</div>
 	</section>
@@ -361,8 +368,7 @@ select > option {
 		<button class="reset btn" onclick="// wpm = 0, timer = 0, char_index = 0, isBackspace = false, backspaceCount = 0; loadContents(); 
 		window.location.reload();">reset !</button>
 		<button class="random btn" onclick="setCurrentParagraph(Math.floor(Math.random()*3)+1);">random ~</button>
-		<!-- <button class="choose btn" onclick="document.all.choosetxt.focus();">choose @</button> -->
-		<button class="custom btn" onclick="document.getElementById('customtext-container').style.display = 'block';">custom #</button>
+		<button class="custom btn" onclick="document.getElementById('customtext-container').style.display = 'block'; document.getElementById('customText').focus();">custom #</button>
 	</section>
 
     <div class="choosetext-wrapper">
@@ -374,11 +380,12 @@ select > option {
     </div>
 
 	<div id="customtext-container">
-	    <h1>CUSTOM TEXT</h1>
+	    <h2 class="customTextBox-title">CUSTOM TEXT</h2>
 	    <div id="customTextBox">
 	        <textarea id="customText"></textarea>
 	    </div>
-    	<input type="button" id="typerrbtn" value="save">
+    	<input type="button" class="customtext-btn" id="savebtn" value="save">
+    	<input type="button" class="customtext-btn" value="clear" style="background-color: #690000" onclick="document.getElementById('customText').value = ''; document.getElementById('customText').focus();">
 	</div>
 
 	<div id="bgblur"></div>
@@ -404,7 +411,7 @@ let deletetimerID;
 const paragraph = id('paragraph');
 const typerr = id('typerr');
 const typedfeedback = id('currentletter');
-const typinginfo = document.querySelectorAll('p.info-value'); // crct, incrct, crctd, wpm
+const typinginfo = querySelectAll('p.info-value'); // crct, incrct, tym, wpm
 
 // INITIAL SETUP
 window.addEventListener('load', function() {
@@ -416,12 +423,25 @@ window.addEventListener('load', function() {
 		// update every second
 		updateWPM();
 		timer++;
+		typinginfo[2].textContent = timer;
 	}, 1000);
 	// remove timer function
 	deletetimerID = function() { clearInterval(timerID); }
 	// first run
 	setCurrentParagraph(1);
+	// UIUX
+	setTimeout(pageLoadUIUX, 100);
 });
+
+// UI-UX on page load
+function pageLoadUIUX() {
+	// background overlay
+	querySelect('.main-container').style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+	id('paragraph').style.color = '#fff';
+	querySelect('.current-container').style.transform = "scale(1.35)";
+	querySelect('.info-section').style.padding = "1.5rem 12px";
+	// id('currentletter').style.width = "3rem";
+}
 
 // load n format text
 function loadContents() {
@@ -479,11 +499,11 @@ typerr.addEventListener('keypress', function(event) {
 		typinginfo[0].textContent = Number(typinginfo[0].textContent) + 1;
 		// corrected letter
 		if(backspaceCount > 0) { // COMINGSOONNN... ftr
-			typinginfo[2].textContent = Number(typinginfo[2].textContent) + 1;
+			typinginfo[4].textContent = Number(typinginfo[4].textContent) + 1;
 			backspaceCount--;
 			// console.log('backspaceCount: ',backspaceCount);
 		}
-		typedfeedback.style.boxShadow = '-70px -30px 90px 66px yellowgreen'; // feedback
+		typedfeedback.style.boxShadow = '-70px -30px 90px 66px #ffc107ad'; // feedback
 	}
 
 	// incorrect letter
@@ -551,15 +571,15 @@ function stopTyperr() {
 // finish game
 function animatedCelebration(speed) {
 	// dom manupulation ahead !!
-	const typingSpeed = document.querySelector('.info-box:nth-child(4)')
+	const typingSpeed = querySelect('.info-box:nth-child(4)')
 	// animated result entry
 	document.getElementById('bgblur').style.display = 'block';
 	typingSpeed.style.transition = '1.16s';
 	typingSpeed.style.position = 'absolute';
-	typingSpeed.style.transform = 'scale(1.62) rotate(360deg)';
+	typingSpeed.style.transform = 'scale(1.8) rotate(360deg)';
 	typingSpeed.style.top = '45%';
 	typingSpeed.style.left = '45%';
-	typingSpeed.style.backgroundColor = 'white';
+	typingSpeed.style.backgroundColor = '#efc107';
 	typingSpeed.style.boxShadow = '3px 4px 4px 2px black';
 	typingSpeed.style.zIndex = '999';
 	document.getElementById('bgblur').style.opacity = '0.6';
@@ -579,7 +599,7 @@ function animatedCelebration(speed) {
 
 // CUSTOM TEXT APPLYYYYYYER FUNCKKSIONn
 
-const typerbtn = id('typerrbtn');
+const typerbtn = id('savebtn');
 const customtext = id('customText');
 
 typerbtn.addEventListener('click', function() {
@@ -590,6 +610,7 @@ typerbtn.addEventListener('click', function() {
 		raw_paragraph = newText.replace(/(\n|\r)/gm, " ");
 	}else {
 		alert('Enter atleast minimum letters to go..');
+		customtext.focus();
 		return false;
 	}
 	char_index = 0; // start from beginning
@@ -602,8 +623,20 @@ typerbtn.addEventListener('click', function() {
 
 // HELPER FUNCTIONS
 
-function id(el) {
-	return document.getElementById(el);
+function id(__) {
+	return document.getElementById(__);
+}
+
+function getElementsByClass(__) {
+	return document.getElementsByClassName(__);
+}
+
+function querySelect(__) {
+	return document.querySelector(__);
+}
+
+function querySelectAll(__) {
+	return document.querySelectorAll(__);
 }
 
 
